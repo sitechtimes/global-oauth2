@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "universal-signin"
+version = "0.1.0"
+description = ""
+authors = ["Henry Zheng <zhenghenry2@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+djangorestframework = "^3.14.0"
+django = "^4.2.5"
+djangorestframework-oauth = "^1.1.0"
+django-oauth2 = "^4.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
