@@ -26,7 +26,7 @@ class User(models.Model):
         on_delete=models.CASCADE
     )
     is_verified = models.BooleanField(default=False)
-    graduation_year = models.IntegerField(max_length=4)
+    graduation_year = models.IntegerField()
 
     password = models.CharField(max_length=100)
 
