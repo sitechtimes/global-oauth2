@@ -1,9 +1,13 @@
 from django.contrib import admin
-from .models import AccessToken, RefreshToken, AuthorizationCode, User
+from django.contrib.auth.admin import UserAdmin
+from .models import CustomUser
 
 # Register your models here.
 
-admin.site.register(AccessToken)
-admin.site.register(RefreshToken)
-admin.site.register(AuthorizationCode)
-admin.site.register(User)
+
+class CustomUserAdmin(UserAdmin):
+    model = CustomUser
+    lint_display = ['email', 'username', 'first_name', 'last_name', 'is_staff']
+
+
+admin.site.register(CustomUser, CustomUserAdmin)

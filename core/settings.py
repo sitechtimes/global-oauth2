@@ -129,3 +129,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ORIGIN_ALLOW_ALL = True
 
 LOGIN_URL = "/registration/login"
+
+AUTH_USER_MODEL = 'authserver.CustomUser'
