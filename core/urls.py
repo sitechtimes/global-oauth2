@@ -22,5 +22,6 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('registration/', include("django.contrib.auth.urls")),
-    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider'))
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
+    path('users/', include(('authserver.urls', 'users'), namespace='users'))
 ]
