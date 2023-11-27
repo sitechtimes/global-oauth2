@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'oauth2_provider',
     'corsheaders',
-    'authserver'
+    'authserver',
 ]
 
 MIDDLEWARE = [
@@ -130,4 +130,4 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 LOGIN_URL = "/registration/login"
 
-AUTH_USER_MODEL = 'authserver.CustomUser'
+AUTH_USER_MODEL = 'authserver.User'
