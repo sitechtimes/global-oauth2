@@ -30,7 +30,7 @@ def signup(request):
             user.email_code = uuid.uuid4()
             user.save()
             response_data = {
-                'email-code': f"http://127.0.0.1:8000/users/verify/{user.email_code}"
+                'email-code': f"http://127.0.0.1:8000/users/verify/?code={user.email_code}"
             }
             return JsonResponse(response_data)
         else:
@@ -40,26 +40,25 @@ def signup(request):
 
 
 @csrf_exempt
-def verify(request, code):
+def verify(request):
+    code = request.GET.get('code', '')
     user = User.objects.get(email_code=code)
-    user.verified = True
-    user.save()
-    return JsonResponse({'verified': True})
+    if user:
+        user.verified = True
+        user.email_code = ''
+        user.save()
+        response_data = {
+            'verified': True
+        }
+        return JsonResponse(response_data)
+    else:
+        return JsonResponse({'errors': 'User does not exist'})
 
-
-
-
-
-# def signup(request):
-#     if request.method == "POST":
-#         form = SignUpForm(request.POST)
-#         if form.is_valid():
-#             user = form.save()
-#             login(request, user)
-#             return redirect('home')
-#             # this should redirect to the login page.
-#             # not sure how that would work with django-oauth-toolkit
-#             # have to worry about original redirect link
-#     else:
-#         form = SignUpForm()
-#     return render(request, 'registration/signup.html', {'form': form})
+    # if request.method == "GET":
+    #     code = request.GET.get('code', '')
+    #     user = User.objects.get(email_code=code)
+    #     user.verified = True
+    #     user.save()
+    #     return JsonResponse({'verified': True})
+    # else:
+    #     raise PermissionDenied
