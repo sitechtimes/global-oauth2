@@ -22,12 +22,15 @@ def signup(request):
             'email': request.POST['email'],
             'username': username,
             'password1': request.POST['password'],
-            'password2': request.POST['password']
+            'password2': request.POST['password'],
+            'first_name': request.POST['first_name'],
+            'last_name': request.POST['last_name']
         }
         form = SignUpForm(body)
         if form.is_valid():
             user = form.save()
             user.email_code = uuid.uuid4()
+            user.graduating_year = request.POST['graduating_year']
             user.save()
             response_data = {
                 'email-code': f"http://127.0.0.1:8000/users/verify/?code={user.email_code}"
