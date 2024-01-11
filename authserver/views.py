@@ -1,17 +1,16 @@
 from django.shortcuts import render, redirect
 from oauth2_provider.views.generic import ProtectedResourceView
 from django.http import HttpResponse, JsonResponse
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import views as auth_views
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
 import json
 import uuid
 from .models import User
 
-from .forms import SignUpForm
+from .forms import SignUpForm, LoginForm
 
 # Create your views here.
-
 
 @csrf_exempt
 def signup(request):
@@ -65,3 +64,8 @@ def verify(request):
     #     return JsonResponse({'verified': True})
     # else:
     #     raise PermissionDenied
+
+
+class LoginView(auth_views.LoginView):
+    form_class = LoginForm
+    template_name = 'registration/login.html'
