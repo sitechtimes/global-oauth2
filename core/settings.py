@@ -25,7 +25,10 @@ SECRET_KEY = 'django-insecure-4cz+@gn=a2x*0a@8(*!kayt(#a2*f@1vd+=41=4)tp(-a9$+t%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1'
+]
 
 
 # Application definition
@@ -131,3 +134,11 @@ CORS_ORIGIN_ALLOW_ALL = True
 LOGIN_URL = "/registration/login"
 
 AUTH_USER_MODEL = 'authserver.User'
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:5173'
+]
+
+CORS_ORIGIN_WHITELIST = [
+    'http://localhost:5173',
+]
