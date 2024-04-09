@@ -4,6 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 import json
 import uuid
 from .models import User
@@ -65,3 +66,14 @@ def verify(request):
     #     return JsonResponse({'verified': True})
     # else:
     #     raise PermissionDenied
+
+
+@login_required()
+def get_user(request, *args, **kwargs):
+    user = request.user
+    response_data = {
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email
+    }
+    return JsonResponse(response_data)
