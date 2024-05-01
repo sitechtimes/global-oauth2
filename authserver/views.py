@@ -4,7 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 import json
 import uuid
 from .models import User
@@ -75,5 +75,14 @@ def get_user(request, *args, **kwargs):
         'first_name': user.first_name,
         'last_name': user.last_name,
         'email': user.email
+    }
+    return JsonResponse(response_data)
+
+
+# >>>> club attendance routes
+@permission_required('authserver.club_attendance_admin')
+def verify_club_admin(request, *args, **kwargs):
+    response_data = {
+        'is_admin': True
     }
     return JsonResponse(response_data)
