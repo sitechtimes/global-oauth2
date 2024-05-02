@@ -4,7 +4,7 @@ from django.db import models
 
 class User(AbstractUser):
     verified = models.BooleanField(default=False)
-    email_code = models.CharField(max_length=50, blank=True)
+    uuid = models.CharField(max_length=50, blank=True)
     graduating_year = models.IntegerField(default=2030)
     pass
 

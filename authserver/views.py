@@ -30,11 +30,11 @@ def signup(request):
         form = SignUpForm(body)
         if form.is_valid():
             user = form.save()
-            user.email_code = uuid.uuid4()
+            user.uuid = uuid.uuid4()
             user.graduating_year = request.POST['graduating_year']
             user.save()
             response_data = {
-                'email-code': f"http://127.0.0.1:8000/users/verify/?code={user.email_code}"
+                'email-code': f"http://127.0.0.1:8000/users/verify/?code={user.uuid}"
             }
             return JsonResponse(response_data)
         else:
@@ -74,7 +74,8 @@ def get_user(request, *args, **kwargs):
     response_data = {
         'first_name': user.first_name,
         'last_name': user.last_name,
-        'email': user.email
+        'email': user.email,
+        'uuid': user.uuid
     }
     return JsonResponse(response_data)
 
