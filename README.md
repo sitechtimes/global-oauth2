@@ -40,7 +40,7 @@ Navigate to `http://127.0.0.1:8000/o/applications` to register your application.
 
 ![application registration form](./register-application.png)
 
-> **Remember to save the client id and client secret.**
+> **Remember to save the client id in frontend .env and both client id and secret in backend .env. The client secret should NEVER go in the frontend.**
 
 Your application is now registered.
 
@@ -67,3 +67,33 @@ http://localhost:8000/o/authorize/?response_type=code&client_id={{ CLIENT_ID }}&
 ```
 
 > **The redirect uri must be the one you defined when you registered the application.**
+
+2. Authorization code will be sent back to the redirect uri with url query key: `code`.
+
+3. Send authorization code to backend for use in token post request.
+
+4. Now you will retrieve the access and refresh tokens. First, generate a Basic header. To do this, base64 encode a string in this format, and attach it as a header and construct the body to the post request as shown.
+
+```js
+stringToBeEncoded = `${client_id}:${client_secret}`; // javascript syntax
+
+... headers: {
+  "Authorization": `Basic ${base64Encode(stringToBeEncoded)}`
+}
+... body: {
+  "grant_type": "authorization_code",
+  "code": AuthorizationCode, // sent from the frontend
+  "redirect_uri": RedirectURI // as defined in your application
+}
+
+// POST TO:
+'http://127.0.0.1:8000/o/token/'
+```
+
+5. Access and refresh tokens returned from the post request to `http://127.0.0.1:8000/o/token/`. Sample response:
+
+![sample api response](./sample-response.png)
+
+6. Tokens sent to frontend.
+
+You are now signed in and can query user data.
