@@ -2,6 +2,18 @@
 
 Single sign-on authentication system built for in-house Staten Island Tech web apps.
 
+- [Installation and Registration](#installation-and-registration)
+- [Implementation](#implementation)
+  - [Flow](#flow)
+  - [Steps](#steps)
+- [Routes](#routes)
+  - [/users/signup/](#post-userssignup)
+  - [/users/verify](#get-usersverify)
+  - [/users/get_user](#get-usersget_user)
+- [Models](#models)
+  - [User](#user)
+  - [Permission Manager](#permission-manager)
+
 ## Installation and Registration
 
 Clone the repository and install poetry.
@@ -82,8 +94,8 @@ stringToBeEncoded = `${client_id}:${client_secret}`; // javascript syntax
 }
 ... body: {
   "grant_type": "authorization_code",
-  "code": AuthorizationCode, // sent from the frontend
-  "redirect_uri": RedirectURI // as defined in your application
+  "code": {...}, // sent from the frontend
+  "redirect_uri": {...} // as defined in your application
 }
 
 // POST TO:
@@ -97,3 +109,73 @@ stringToBeEncoded = `${client_id}:${client_secret}`; // javascript syntax
 6. Tokens sent to frontend.
 
 You are now signed in and can query user data.
+
+## Routes
+
+### [POST] /users/signup/
+
+Generates a user model. Returns a link to verify account. Body format:
+
+```js
+... body: {
+  "email": {...},
+  "password": {...},
+  "first_name": {...},
+  "last_name": {...},
+  "graduating_year": {...}
+}
+
+// returns:
+{
+  "email-code": "http://127.0.0.1:8000/users/verify/?code={example}"
+}
+```
+
+### [GET] /users/verify
+
+URI query `code` required. Link to GET request generated on signup. Sets `user.verified` to `True`.
+
+### [GET] /users/get_user
+
+Send access token as Bearer authorization header.
+
+```js
+// returns:
+{
+  "email": {...},
+  "first_name": {...},
+  "last_name": {...},
+  "uuid": {...}
+}
+```
+
+## Models
+
+### User
+
+Extension of Django built-in AbstractUser model. Adds fields:
+
+```python
+class User(AbstractUser):
+  verified = models.BooleanField(default=False)
+  uuid = models.CharField(max_length=50, blank=True)
+  graduating_year = models.IntegerField(default=2030)
+  pass
+```
+
+### Permission Manager
+
+Arbitrary model for creating custom Django permission groups.
+
+```python
+class PermManager(models.Model):
+  class Meta:
+    managed = False
+
+    default_permissions = ()
+
+    permissions = (
+      ('club_attendance_admin', 'Club Attendance admin'),
+      ('bathroom_pass_admin', 'Bathroom Pass admin')
+    )
+```
