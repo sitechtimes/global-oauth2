@@ -91,6 +91,7 @@ stringToBeEncoded = `${client_id}:${client_secret}`; // javascript syntax
 
 ... headers: {
   "Authorization": `Basic ${base64Encode(stringToBeEncoded)}`
+  "Content-Type": "application/x-www-form-urlencoded"
 }
 ... body: {
   "grant_type": "authorization_code",
