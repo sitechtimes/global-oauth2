@@ -4,6 +4,7 @@ from django.http import HttpResponse, JsonResponse
 from django.contrib.auth import login, authenticate, logout
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required, permission_required
 import json
 import uuid
 from .models import User
@@ -22,15 +23,18 @@ def signup(request):
             'email': request.POST['email'],
             'username': username,
             'password1': request.POST['password'],
-            'password2': request.POST['password']
+            'password2': request.POST['password'],
+            'first_name': request.POST['first_name'],
+            'last_name': request.POST['last_name']
         }
         form = SignUpForm(body)
         if form.is_valid():
             user = form.save()
-            user.email_code = uuid.uuid4()
+            user.uuid = uuid.uuid4()
+            user.graduating_year = request.POST['graduating_year']
             user.save()
             response_data = {
-                'email-code': f"http://127.0.0.1:8000/users/verify/?code={user.email_code}"
+                'email-code': f"http://127.0.0.1:8000/users/verify/?code={user.uuid}"
             }
             return JsonResponse(response_data)
         else:
@@ -62,3 +66,24 @@ def verify(request):
     #     return JsonResponse({'verified': True})
     # else:
     #     raise PermissionDenied
+
+
+@login_required()
+def get_user(request, *args, **kwargs):
+    user = request.user
+    response_data = {
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'email': user.email,
+        'uuid': user.uuid
+    }
+    return JsonResponse(response_data)
+
+
+# >>>> club attendance routes
+@permission_required('authserver.club_attendance_admin')
+def verify_club_admin(request, *args, **kwargs):
+    response_data = {
+        'is_admin': True
+    }
+    return JsonResponse(response_data)
