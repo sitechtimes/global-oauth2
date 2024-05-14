@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from oauth2_provider.views.generic import ProtectedResourceView
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.contrib.auth import login, authenticate, logout
 from django.core.exceptions import PermissionDenied
 from django.views.decorators.csrf import csrf_exempt
@@ -9,7 +9,7 @@ import json
 import uuid
 from .models import User
 
-from .forms import SignUpForm
+from .forms import SignUpForm, ChangePasswordForm
 
 # Create your views here.
 
@@ -79,6 +79,17 @@ def get_user(request, *args, **kwargs):
     }
     return JsonResponse(response_data)
 
+
+@login_required()
+def change_password(request, *args, **kwargs):
+    if request.method == "POST":
+        form = ChangePasswordForm(request.POST, request=request)
+        if form.is_valid():
+            return HttpResponseRedirect("/")
+    else:
+        form = ChangePasswordForm(request=request)
+
+    return render(request, "utility/change_password.html", {"form": form})
 
 # >>>> club attendance routes
 @permission_required('authserver.club_attendance_admin')
