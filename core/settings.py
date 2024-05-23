@@ -149,3 +149,7 @@ CORS_ORIGIN_WHITELIST = [
 OAUTH2_PROVIDER = {
     "PKCE_REQUIRED": False
 }
+
+EMAIL_HOST_PASSWORD = "Edwinsucksatbadminton"
+
+EMAIL_HOST_USER = "noreplysitechlogin@gmail.com"

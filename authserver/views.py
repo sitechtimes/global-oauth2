@@ -8,8 +8,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 import json
 import uuid
 from .models import User
-
-from .forms import SignUpForm, ChangePasswordForm
+from .forms import SignUpForm, ChangePasswordForm, ForgotEmailMailer
 
 # Create your views here.
 
@@ -80,16 +79,31 @@ def get_user(request, *args, **kwargs):
     return JsonResponse(response_data)
 
 
+def forgot_password(request, *args, **kwargs):
+    if request.method == "POST":
+        form = ForgotEmailMailer(request.POST)
+        form.generate_code()
+    else:
+        form = ForgotEmailMailer()
+
+
 @login_required()
 def change_password(request, *args, **kwargs):
     if request.method == "POST":
         form = ChangePasswordForm(request.POST, request=request)
         if form.is_valid():
-            return HttpResponseRedirect("/")
+            new_password = form.clean_passwords()
+            if new_password:
+                user = form.save()
+                return HttpResponseRedirect("/")
+            else:
+                return JsonResponse({'errors': form.errors})
+        return JsonResponse({'errors': form.errors})
     else:
         form = ChangePasswordForm(request=request)
 
     return render(request, "utility/change_password.html", {"form": form})
+
 
 # >>>> club attendance routes
 @permission_required('authserver.club_attendance_admin')
