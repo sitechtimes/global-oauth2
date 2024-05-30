@@ -83,6 +83,7 @@ def forgot_password(request, *args, **kwargs):
     if request.method == "POST":
         form = ForgotEmailMailer(request.POST)
         form.generate_code()
+        form.send()
     else:
         form = ForgotEmailMailer()
 

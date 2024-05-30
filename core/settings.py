@@ -150,6 +150,11 @@ OAUTH2_PROVIDER = {
     "PKCE_REQUIRED": False
 }
 
-EMAIL_HOST_PASSWORD = "Edwinsucksatbadminton"
+EMAIL_HOST_PASSWORD = os.environ["EMAIL_PASSWORD"]
 
-EMAIL_HOST_USER = "noreplysitechlogin@gmail.com"
+EMAIL_HOST_USER = os.environ["EMAIL_USER"]
+# noreplysitechlogin@gmail.com
+
+EMAIL_PORT = 465
+
+EMAIL_HOST = "smtp.gmail.com"

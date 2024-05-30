@@ -82,4 +82,9 @@ class ForgotEmailMailer(forms.Form):
 
     def send(self):
         email = self.cleaned_data["email"]
-        send_mail
+        send_mail(
+            "Subject",
+            "This is the email message",
+            "noreplysitechlogin@gmail.com",
+            ["edwinw@nycstudents.net"]
+        )
