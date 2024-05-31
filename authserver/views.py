@@ -82,10 +82,13 @@ def get_user(request, *args, **kwargs):
 def forgot_password(request, *args, **kwargs):
     if request.method == "POST":
         form = ForgotEmailMailer(request.POST)
-        form.generate_code()
-        form.send()
+        if form.is_valid():
+            form.generate_code()
+            form.send()
     else:
         form = ForgotEmailMailer()
+
+    return render(request, "utility/forgot_password.html", {"form": form})
 
 
 @login_required()
