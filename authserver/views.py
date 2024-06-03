@@ -83,13 +83,36 @@ def forgot_password(request, *args, **kwargs):
     if request.method == "POST":
         form = ForgotEmailMailer(request.POST)
         if form.is_valid():
-            form.generate_code()
             form.send()
+        else:
+            return JsonResponse({'errors': form.errors})
     else:
         form = ForgotEmailMailer()
 
     return render(request, "utility/forgot_password.html", {"form": form})
 
+
+def reset_password(request, *args, **kwargs):
+    if request.method == "POST":
+        code = request.COOKIES.get("email_code")
+        user = User.objects.get(email_code=code)
+        form = ChangePasswordForm(request.POST, user=user)
+        if form.is_valid():
+            new_password = form.clean_passwords()
+            if new_password:
+                user = form.save()
+                return HttpResponseRedirect("/")
+            else:
+                return JsonResponse({'errors': form.errors})
+        return JsonResponse({'errors': form.errors})
+    else:
+        code = request.GET.get('code', '')
+        user = User.objects.get(email_code=code)
+        form = ChangePasswordForm(user=user)
+        response = render(request, "utility/change_password.html", {"form": form})
+        response.set_cookie("email_code", code)
+
+    return response
 
 @login_required()
 def change_password(request, *args, **kwargs):

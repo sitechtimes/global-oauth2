@@ -14,17 +14,9 @@ class SignUpForm(UserCreationForm):
 
 class ChangePasswordForm(forms.Form):
     def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop("request")
-        self.user = self.request.user
+        self.user = kwargs.pop("user")
         super(ChangePasswordForm, self).__init__(*args, **kwargs)
 
-    old_password = forms.CharField(
-        label="Old password",
-        strip=False,
-        widget=forms.PasswordInput(
-            attrs={"autocomplete": "current-password", "autofocus": True}
-        ),
-    )
     new_password1 = forms.CharField(
         label="New password",
         widget=forms.PasswordInput(attrs={"autocomplete": "new-password"}),
@@ -38,12 +30,6 @@ class ChangePasswordForm(forms.Form):
     )
 
     def clean_passwords(self):
-        old_password = self.cleaned_data["old_password"]
-        if not self.user.check_password(old_password):
-            raise ValidationError(
-                "Your old password was entered incorrectly. Please enter it again.",
-                code="password_incorrect"
-            )
         password1 = self.cleaned_data.get("new_password1")
         password2 = self.cleaned_data.get("new_password2")
         if password1 and password2 and password1 != password2:
@@ -69,7 +55,7 @@ class ForgotEmailMailer(forms.Form):
         widget=forms.EmailInput(attrs={"autocomplete": "email"}),
     )
 
-    def generate_code(self):
+    def send(self):
         email = self.cleaned_data["email"]
         user = User.objects.get(email__iexact=email)
         if not user:
@@ -79,12 +65,10 @@ class ForgotEmailMailer(forms.Form):
             )
         code = uuid.uuid4()
         user.email_code = code
-
-    def send(self):
-        email = self.cleaned_data["email"]
+        user.save()
         send_mail(
-            "Subject",
-            "This is the email message",
+            "Password Reset Link",
+            f"Click this link to reset your password. http://127.0.0.1:8000/users/reset_password?code={code}",
             "noreplysitechlogin@gmail.com",
-            ["edwinw@nycstudents.net"]
+            [email]
         )
