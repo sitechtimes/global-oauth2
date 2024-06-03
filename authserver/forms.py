@@ -67,8 +67,8 @@ class ForgotEmailMailer(forms.Form):
         user.email_code = code
         user.save()
         send_mail(
-            "Password Reset Link",
-            f"Click this link to reset your password. http://127.0.0.1:8000/users/reset_password?code={code}",
-            "noreplysitechlogin@gmail.com",
-            [email]
+            subject="Password Reset Link",
+            message="Click this link to reset your password. http://127.0.0.1:8000/users/reset_password?code={code}",
+            from_email="noreplysitechlogin@gmail.com",
+            recipient_list=[email]
         )
